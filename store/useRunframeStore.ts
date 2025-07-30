@@ -42,11 +42,12 @@ type Routine = {
   owner_module: string
 }
 
-// Comprehensive demo modules - ALL CORE + 4 ACTIVE per layer
+// --- NEW UUID-BASED DEMO DATA ---
+
 const DEMO_MODULES: Module[] = [
-  // Z-Layer (Strategy/Core) - ALL CORE MODULES (0-9) + 4 ACTIVE (10+)
+  // Z-Layer
   {
-    id: "z0",
+    id: "00000000-0000-4000-8000-0000000000z0",
     name: "System Core",
     state: "locked",
     sprint_day: 0,
@@ -55,7 +56,7 @@ const DEMO_MODULES: Module[] = [
     code: 0,
   },
   {
-    id: "z1",
+    id: "00000000-0000-4000-8000-0000000000z1",
     name: "Identity Engine",
     state: "locked",
     sprint_day: 0,
@@ -64,7 +65,7 @@ const DEMO_MODULES: Module[] = [
     code: 1,
   },
   {
-    id: "z2",
+    id: "00000000-0000-4000-8000-0000000000z2",
     name: "Command Center",
     state: "wip",
     sprint_day: 0,
@@ -73,7 +74,7 @@ const DEMO_MODULES: Module[] = [
     code: 2,
   },
   {
-    id: "z3",
+    id: "00000000-0000-4000-8000-0000000000z3",
     name: "Relationship Engine (CRM)",
     state: "stub",
     sprint_day: 0,
@@ -82,7 +83,7 @@ const DEMO_MODULES: Module[] = [
     code: 3,
   },
   {
-    id: "z4",
+    id: "00000000-0000-4000-8000-0000000000z4",
     name: "Execution Logic",
     state: "built",
     sprint_day: 0,
@@ -91,7 +92,7 @@ const DEMO_MODULES: Module[] = [
     code: 4,
   },
   {
-    id: "z5",
+    id: "00000000-0000-4000-8000-0000000000z5",
     name: "Rhythm + System Sync",
     state: "partial",
     sprint_day: 0,
@@ -100,7 +101,7 @@ const DEMO_MODULES: Module[] = [
     code: 5,
   },
   {
-    id: "z6",
+    id: "00000000-0000-4000-8000-0000000000z6",
     name: "General Consequence 🪖",
     state: "stub",
     sprint_day: 0,
@@ -109,7 +110,7 @@ const DEMO_MODULES: Module[] = [
     code: 6,
   },
   {
-    id: "z7",
+    id: "00000000-0000-4000-8000-0000000000z7",
     name: "Context & Memory Engine",
     state: "stub",
     sprint_day: 0,
@@ -118,7 +119,7 @@ const DEMO_MODULES: Module[] = [
     code: 7,
   },
   {
-    id: "z8",
+    id: "00000000-0000-4000-8000-0000000000z8",
     name: "Template Repository",
     state: "locked",
     sprint_day: 0,
@@ -127,7 +128,7 @@ const DEMO_MODULES: Module[] = [
     code: 8,
   },
   {
-    id: "z9",
+    id: "00000000-0000-4000-8000-0000000000z9",
     name: "Buffer",
     state: "spare",
     sprint_day: 0,
@@ -135,9 +136,8 @@ const DEMO_MODULES: Module[] = [
     layer: "z",
     code: 9,
   },
-  // Z-Layer ACTIVE modules (10+)
   {
-    id: "z10",
+    id: "00000000-0000-4000-8000-000000000z10",
     name: "Content Distribution Hub",
     state: "active",
     sprint_day: 0,
@@ -146,7 +146,7 @@ const DEMO_MODULES: Module[] = [
     code: 10,
   },
   {
-    id: "z11",
+    id: "00000000-0000-4000-8000-000000000z11",
     name: "Analytics Engine",
     state: "live",
     sprint_day: 0,
@@ -155,7 +155,7 @@ const DEMO_MODULES: Module[] = [
     code: 11,
   },
   {
-    id: "z12",
+    id: "00000000-0000-4000-8000-000000000z12",
     name: "Security Framework",
     state: "built",
     sprint_day: 0,
@@ -164,7 +164,7 @@ const DEMO_MODULES: Module[] = [
     code: 12,
   },
   {
-    id: "z13",
+    id: "00000000-0000-4000-8000-000000000z13",
     name: "Integration Hub",
     state: "sprint",
     sprint_day: 5,
@@ -173,10 +173,9 @@ const DEMO_MODULES: Module[] = [
     code: 13,
     length_days: 21,
   },
-
-  // X-Layer (Business/Brands) - ALL CORE (0-9) + 4 ACTIVE (10+)
+  // X-Layer
   {
-    id: "x0",
+    id: "00000000-0000-4000-8000-0000000000x0",
     name: "POS Core System",
     state: "draft",
     sprint_day: 0,
@@ -185,7 +184,7 @@ const DEMO_MODULES: Module[] = [
     code: 0,
   },
   {
-    id: "x1",
+    id: "00000000-0000-4000-8000-0000000000x1",
     name: "POS Dashboard",
     state: "built",
     sprint_day: 0,
@@ -194,7 +193,7 @@ const DEMO_MODULES: Module[] = [
     code: 1,
   },
   {
-    id: "x2",
+    id: "00000000-0000-4000-8000-0000000000x2",
     name: "Scaling Vault",
     state: "wip",
     sprint_day: 0,
@@ -203,7 +202,7 @@ const DEMO_MODULES: Module[] = [
     code: 2,
   },
   {
-    id: "x3",
+    id: "00000000-0000-4000-8000-0000000000x3",
     name: "PRD Index",
     state: "stub",
     sprint_day: 0,
@@ -212,7 +211,7 @@ const DEMO_MODULES: Module[] = [
     code: 3,
   },
   {
-    id: "x4",
+    id: "00000000-0000-4000-8000-0000000000x4",
     name: "Roadmap Index",
     state: "draft",
     sprint_day: 0,
@@ -221,7 +220,7 @@ const DEMO_MODULES: Module[] = [
     code: 4,
   },
   {
-    id: "x5",
+    id: "00000000-0000-4000-8000-0000000000x5",
     name: "Execution Vault",
     state: "queued",
     sprint_day: 0,
@@ -230,7 +229,7 @@ const DEMO_MODULES: Module[] = [
     code: 5,
   },
   {
-    id: "x6",
+    id: "00000000-0000-4000-8000-0000000000x6",
     name: "Task Vault",
     state: "stub",
     sprint_day: 0,
@@ -239,7 +238,7 @@ const DEMO_MODULES: Module[] = [
     code: 6,
   },
   {
-    id: "x7",
+    id: "00000000-0000-4000-8000-0000000000x7",
     name: "Review Index",
     state: "stub",
     sprint_day: 0,
@@ -248,7 +247,7 @@ const DEMO_MODULES: Module[] = [
     code: 7,
   },
   {
-    id: "x8",
+    id: "00000000-0000-4000-8000-0000000000x8",
     name: "Knowledge Hub",
     state: "active",
     sprint_day: 0,
@@ -257,7 +256,7 @@ const DEMO_MODULES: Module[] = [
     code: 8,
   },
   {
-    id: "x9",
+    id: "00000000-0000-4000-8000-0000000000x9",
     name: "Automation Logic",
     state: "planned",
     sprint_day: 0,
@@ -265,9 +264,8 @@ const DEMO_MODULES: Module[] = [
     layer: "x",
     code: 9,
   },
-  // X-Layer ACTIVE modules (10+)
   {
-    id: "x10",
+    id: "00000000-0000-4000-8000-000000000x10",
     name: "SSIG",
     state: "live",
     sprint_day: 0,
@@ -276,7 +274,7 @@ const DEMO_MODULES: Module[] = [
     code: 10,
   },
   {
-    id: "x11",
+    id: "00000000-0000-4000-8000-000000000x11",
     name: "PapaBare",
     state: "live",
     sprint_day: 0,
@@ -285,7 +283,7 @@ const DEMO_MODULES: Module[] = [
     code: 11,
   },
   {
-    id: "x12",
+    id: "00000000-0000-4000-8000-000000000x12",
     name: "RustRaptor",
     state: "bootstrap",
     sprint_day: 0,
@@ -294,7 +292,7 @@ const DEMO_MODULES: Module[] = [
     code: 12,
   },
   {
-    id: "x13",
+    id: "00000000-0000-4000-8000-000000000x13",
     name: "Brand Identity",
     state: "sprint",
     sprint_day: 7,
@@ -303,10 +301,9 @@ const DEMO_MODULES: Module[] = [
     code: 13,
     length_days: 14,
   },
-
-  // Y-Layer (Personal/Life) - ALL CORE (0-9) + 4 ACTIVE (10+)
+  // Y-Layer
   {
-    id: "y0",
+    id: "00000000-0000-4000-8000-0000000000y0",
     name: "HoS Life Core",
     state: "draft",
     sprint_day: 0,
@@ -315,7 +312,7 @@ const DEMO_MODULES: Module[] = [
     code: 0,
   },
   {
-    id: "y1",
+    id: "00000000-0000-4000-8000-0000000000y1",
     name: "HoS Dashboard",
     state: "built",
     sprint_day: 0,
@@ -324,7 +321,7 @@ const DEMO_MODULES: Module[] = [
     code: 1,
   },
   {
-    id: "y2",
+    id: "00000000-0000-4000-8000-0000000000y2",
     name: "HoS Scaling Vault",
     state: "wip",
     sprint_day: 0,
@@ -333,7 +330,7 @@ const DEMO_MODULES: Module[] = [
     code: 2,
   },
   {
-    id: "y3",
+    id: "00000000-0000-4000-8000-0000000000y3",
     name: "HoS PRD Index",
     state: "stub",
     sprint_day: 0,
@@ -342,7 +339,7 @@ const DEMO_MODULES: Module[] = [
     code: 3,
   },
   {
-    id: "y4",
+    id: "00000000-0000-4000-8000-0000000000y4",
     name: "HoS Roadmap Index",
     state: "draft",
     sprint_day: 0,
@@ -351,7 +348,7 @@ const DEMO_MODULES: Module[] = [
     code: 4,
   },
   {
-    id: "y5",
+    id: "00000000-0000-4000-8000-0000000000y5",
     name: "HoS Execution Vault",
     state: "restore",
     sprint_day: 0,
@@ -360,7 +357,7 @@ const DEMO_MODULES: Module[] = [
     code: 5,
   },
   {
-    id: "y6",
+    id: "00000000-0000-4000-8000-0000000000y6",
     name: "HoS Task Vault",
     state: "skeleton",
     sprint_day: 0,
@@ -369,7 +366,7 @@ const DEMO_MODULES: Module[] = [
     code: 6,
   },
   {
-    id: "y7",
+    id: "00000000-0000-4000-8000-0000000000y7",
     name: "HoS Review Index",
     state: "empty",
     sprint_day: 0,
@@ -378,7 +375,7 @@ const DEMO_MODULES: Module[] = [
     code: 7,
   },
   {
-    id: "y8",
+    id: "00000000-0000-4000-8000-0000000000y8",
     name: "HoS Asset Bank",
     state: "live",
     sprint_day: 0,
@@ -387,7 +384,7 @@ const DEMO_MODULES: Module[] = [
     code: 8,
   },
   {
-    id: "y9",
+    id: "00000000-0000-4000-8000-0000000000y9",
     name: "HoS Automation Logic",
     state: "blank",
     sprint_day: 0,
@@ -395,9 +392,8 @@ const DEMO_MODULES: Module[] = [
     layer: "y",
     code: 9,
   },
-  // Y-Layer ACTIVE modules (10+)
   {
-    id: "y10",
+    id: "00000000-0000-4000-8000-000000000y10",
     name: "Career Launchpad",
     state: "live",
     sprint_day: 0,
@@ -406,7 +402,7 @@ const DEMO_MODULES: Module[] = [
     code: 10,
   },
   {
-    id: "y11",
+    id: "00000000-0000-4000-8000-000000000y11",
     name: "Fitness",
     state: "live",
     sprint_day: 0,
@@ -415,7 +411,7 @@ const DEMO_MODULES: Module[] = [
     code: 11,
   },
   {
-    id: "y12",
+    id: "00000000-0000-4000-8000-000000000y12",
     name: "Finance",
     state: "active",
     sprint_day: 0,
@@ -424,7 +420,7 @@ const DEMO_MODULES: Module[] = [
     code: 12,
   },
   {
-    id: "y13",
+    id: "00000000-0000-4000-8000-000000000y13",
     name: "Time Management",
     state: "sprint",
     sprint_day: 3,
@@ -436,13 +432,62 @@ const DEMO_MODULES: Module[] = [
 ]
 
 const DEMO_TASKS: Task[] = [
-  { id: "1", module_id: "z2", label: "Initialize command interface", done: false, priority: 1, state: "doing" },
-  { id: "2", module_id: "z4", label: "Optimize execution engine", done: true, priority: 2, state: "done" },
-  { id: "3", module_id: "z13", label: "Setup API gateway", done: false, priority: 1, state: "todo" },
-  { id: "4", module_id: "x13", label: "Design brand guidelines", done: false, priority: 1, state: "todo" },
-  { id: "5", module_id: "x10", label: "Update SSIG landing page", done: true, priority: 2, state: "done" },
-  { id: "6", module_id: "y13", label: "Set up time tracking system", done: false, priority: 1, state: "todo" },
-  { id: "7", module_id: "y12", label: "Review investment portfolio", done: false, priority: 2, state: "doing" },
+  {
+    id: "1",
+    module_id: "00000000-0000-4000-8000-0000000000z2",
+    label: "Initialize command interface",
+    done: false,
+    priority: 1,
+    state: "doing",
+  },
+  {
+    id: "2",
+    module_id: "00000000-0000-4000-8000-0000000000z4",
+    label: "Optimize execution engine",
+    done: true,
+    priority: 2,
+    state: "done",
+  },
+  {
+    id: "3",
+    module_id: "00000000-0000-4000-8000-000000000z13",
+    label: "Setup API gateway",
+    done: false,
+    priority: 1,
+    state: "todo",
+  },
+  {
+    id: "4",
+    module_id: "00000000-0000-4000-8000-000000000x13",
+    label: "Design brand guidelines",
+    done: false,
+    priority: 1,
+    state: "todo",
+  },
+  {
+    id: "5",
+    module_id: "00000000-0000-4000-8000-000000000x10",
+    label: "Update SSIG landing page",
+    done: true,
+    priority: 2,
+    state: "done",
+  },
+  {
+    id: "6",
+    module_id: "00000000-0000-4000-8000-000000000y13",
+    label: "Set up time tracking system",
+    done: false,
+    priority: 1,
+    state: "todo",
+  },
+  {
+    id: "7",
+    module_id: "00000000-0000-4000-8000-000000000y12",
+    label: "Review investment portfolio",
+    done: false,
+    priority: 2,
+    state: "doing",
+  },
 ]
 
 const DEMO_HABITS: Habit[] = [
@@ -454,7 +499,7 @@ const DEMO_HABITS: Habit[] = [
     quota: 1,
     today: true,
     last_check: dayjs().format("YYYY-MM-DD"),
-    module_id: "z2",
+    module_id: "00000000-0000-4000-8000-0000000000z2",
   },
   {
     id: "2",
@@ -464,7 +509,7 @@ const DEMO_HABITS: Habit[] = [
     quota: 1,
     today: false,
     last_check: dayjs().subtract(1, "day").format("YYYY-MM-DD"),
-    module_id: "z7",
+    module_id: "00000000-0000-4000-8000-0000000000z7",
   },
   {
     id: "3",
@@ -474,7 +519,7 @@ const DEMO_HABITS: Habit[] = [
     quota: 1,
     today: true,
     last_check: dayjs().format("YYYY-MM-DD"),
-    module_id: "y11",
+    module_id: "00000000-0000-4000-8000-000000000y11",
   },
   {
     id: "4",
@@ -484,7 +529,7 @@ const DEMO_HABITS: Habit[] = [
     quota: 1,
     today: false,
     last_check: dayjs().subtract(2, "day").format("YYYY-MM-DD"),
-    module_id: "y13",
+    module_id: "00000000-0000-4000-8000-000000000y13",
   },
   {
     id: "5",
@@ -494,7 +539,7 @@ const DEMO_HABITS: Habit[] = [
     quota: 1,
     today: true,
     last_check: dayjs().format("YYYY-MM-DD"),
-    module_id: "x13",
+    module_id: "00000000-0000-4000-8000-000000000x13",
   },
 ]
 
@@ -509,7 +554,7 @@ const DEMO_ROUTINES: Routine[] = [
       { id: "rt2", label: "Journal 3 pages", done: true },
       { id: "rt3", label: "Review daily goals", done: false },
     ],
-    owner_module: "y13",
+    owner_module: "00000000-0000-4000-8000-000000000y13",
   },
   {
     id: "r2",
@@ -521,7 +566,7 @@ const DEMO_ROUTINES: Routine[] = [
       { id: "rt5", label: "Strength training 45min", done: false },
       { id: "rt6", label: "Cool down stretch", done: false },
     ],
-    owner_module: "y11",
+    owner_module: "00000000-0000-4000-8000-000000000y11",
   },
   {
     id: "r3",
@@ -533,7 +578,7 @@ const DEMO_ROUTINES: Routine[] = [
       { id: "rt8", label: "Plan tomorrow priorities", done: false },
       { id: "rt9", label: "Read 30min", done: true },
     ],
-    owner_module: "y13",
+    owner_module: "00000000-0000-4000-8000-000000000y13",
   },
 ]
 
