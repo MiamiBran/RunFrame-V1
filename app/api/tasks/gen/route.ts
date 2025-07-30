@@ -83,7 +83,7 @@ export async function POST(req: Request) {
   // --- Valid API Key Path ---
   try {
     console.log("🤖 Valid API key found. Initializing OpenAI client...")
-    const openai = new OpenAI({ apiKey })
+    const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true })
 
     let moduleContext = `Module ID: ${module_id}`
     if (supabase) {

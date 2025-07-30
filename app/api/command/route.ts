@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     }
 
     // --- Valid API Key Path ---
-    const openai = new OpenAI({ apiKey })
+    const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true })
 
     const tools = [
       {
