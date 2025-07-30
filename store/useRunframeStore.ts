@@ -500,7 +500,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 7,
     quota: 1,
     today: true,
-    last_check: dayjs().format("YYYY-MM-DD"),
+    last_check: dayjs.default().format("YYYY-MM-DD"),
     module_id: "00000000-0000-4000-a000-000000000002",
   },
   {
@@ -510,7 +510,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 3,
     quota: 1,
     today: false,
-    last_check: dayjs().subtract(1, "day").format("YYYY-MM-DD"),
+    last_check: dayjs.default().subtract(1, "day").format("YYYY-MM-DD"),
     module_id: "00000000-0000-4000-a000-000000000007",
   },
   {
@@ -520,7 +520,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 12,
     quota: 1,
     today: true,
-    last_check: dayjs().format("YYYY-MM-DD"),
+    last_check: dayjs.default().format("YYYY-MM-DD"),
     module_id: "00000000-0000-4000-c000-000000000011",
   },
   {
@@ -530,7 +530,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 5,
     quota: 1,
     today: false,
-    last_check: dayjs().subtract(2, "day").format("YYYY-MM-DD"),
+    last_check: dayjs.default().subtract(2, "day").format("YYYY-MM-DD"),
     module_id: "00000000-0000-4000-c000-000000000013",
   },
   {
@@ -540,7 +540,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 2,
     quota: 1,
     today: true,
-    last_check: dayjs().format("YYYY-MM-DD"),
+    last_check: dayjs.default().format("YYYY-MM-DD"),
     module_id: "00000000-0000-4000-b000-000000000013",
   },
 ]
@@ -829,11 +829,11 @@ export const useRunframeStore = create<RunframeStore>((set, get) => ({
       navigator.vibrate(30)
     }
 
-    const today = dayjs().format("YYYY-MM-DD")
+    const today = dayjs.default().format("YYYY-MM-DD")
     const habit = get().habits.find((h) => h.id === id)
     if (!habit) return
 
-    const wasCompletedToday = habit.today || dayjs(habit.last_check).isSame(dayjs(), "day")
+    const wasCompletedToday = habit.today || dayjs.default(habit.last_check).isSame(dayjs.default(), "day")
     const newStreak = wasCompletedToday ? Math.max(0, habit.streak - 1) : habit.streak + 1
     const newToday = !wasCompletedToday
 

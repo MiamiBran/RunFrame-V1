@@ -13,7 +13,7 @@ export default function HabitChipRow() {
   return (
     <div className="flex gap-3 overflow-x-auto px-4 py-3 bg-[#080808] border-b border-white/5 scrollbar-hide">
       {habits.map((h) => {
-        const met = h.today || dayjs(h.last_check).isSame(dayjs(), "day")
+        const met = h.today || dayjs.default(h.last_check).isSame(dayjs.default(), "day")
         return (
           <button
             key={h.id}
