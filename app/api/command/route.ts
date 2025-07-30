@@ -1,3 +1,5 @@
+export const runtime = "nodejs" // Force Node.js runtime, disable edge
+
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
 import OpenAI from "openai"

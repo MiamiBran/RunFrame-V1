@@ -132,14 +132,20 @@ export default function TasksPanel({ moduleId }: TasksPanelProps) {
       // Store the result for display
       setLastGenerationResult(data)
 
-      // Handle response
+      // Handle different response scenarios
       if (data.success) {
-        // Refresh the tasks from the database/store
-        await fetchInitial()
-        toast.success(data.message || `Added ${data.count} tasks!`)
+        await fetchInitial() // Refresh the tasks in the store
+
+        // Show success toast
+        if (data.source === "ai") {
+          toast.success(`🤖 Generated ${data.count} AI tasks!`)
+        } else if (data.source === "demo") {
+          toast.success(`📋 Added ${data.count} demo tasks!`)
+        } else {
+          toast.success(`✅ Added ${data.count} tasks!`)
+        }
       } else {
-        // Log the error for debugging, the UI will show the message from lastGenerationResult
-        console.error("Task generation failed on server:", data.message || data.error)
+        // Server returned an error but might have fallback tasks
         toast.error(data.message || data.error || "Task generation failed")
       }
     } catch (error) {
