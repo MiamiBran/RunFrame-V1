@@ -35,18 +35,22 @@ function isValidOpenAIKey(key: any): key is string {
 async function insertDemoTasks(moduleId: string) {
   const demoTasks = getDemoTasks(moduleId)
   if (supabase) {
-    try {
-      await supabase.from("tasks").delete().eq("module_id", moduleId)
-      const tasksToInsert = demoTasks.map((task) => ({
-        module_id: moduleId,
-        label: task.label,
-        priority: task.priority,
-        state: "todo",
-        done: false,
-      }))
-      await supabase.from("tasks").insert(tasksToInsert)
-    } catch (dbError) {
-      console.error("❌ Database operation failed for demo tasks:", dbError)
+    const { error: deleteError } = await supabase.from("tasks").delete().eq("module_id", moduleId)
+    if (deleteError) {
+      console.error("❌ Demo task delete error:", deleteError)
+      throw new Error("Failed to clear tasks for demo fallback.")
+    }
+    const tasksToInsert = demoTasks.map((task) => ({
+      module_id: moduleId,
+      label: task.label,
+      priority: task.priority,
+      state: "todo",
+      done: false,
+    }))
+    const { error: insertError } = await supabase.from("tasks").insert(tasksToInsert)
+    if (insertError) {
+      console.error("❌ Demo task insert error:", insertError)
+      throw new Error("Failed to insert demo tasks.")
     }
   }
   return demoTasks
@@ -117,7 +121,14 @@ export async function POST(req: Request) {
     }
 
     if (supabase) {
-      await supabase.from("tasks").delete().eq("module_id", module_id)
+      // Delete old tasks
+      const { error: deleteError } = await supabase.from("tasks").delete().eq("module_id", module_id)
+      if (deleteError) {
+        console.error("DB delete error:", deleteError)
+        throw new Error("Failed to clear existing tasks.")
+      }
+
+      // Insert new tasks
       const tasksToInsert = generatedTasks.map((task: any, index: number) => ({
         module_id,
         label: task.label,
@@ -125,7 +136,11 @@ export async function POST(req: Request) {
         state: "todo",
         done: false,
       }))
-      await supabase.from("tasks").insert(tasksToInsert)
+      const { error: insertError } = await supabase.from("tasks").insert(tasksToInsert)
+      if (insertError) {
+        console.error("DB insert error:", insertError)
+        throw new Error("Failed to save new tasks.")
+      }
     }
 
     return createResponse({
@@ -137,13 +152,24 @@ export async function POST(req: Request) {
     })
   } catch (error: any) {
     console.error("❌ AI generation failed, falling back to demo tasks:", error)
-    const demoTasks = await insertDemoTasks(module_id)
-    return createResponse({
-      success: true,
-      count: demoTasks.length,
-      tasks: demoTasks,
-      source: "demo_fallback",
-      message: `Using demo tasks. AI Error: ${error.message || "Unknown error"}`,
-    })
+    try {
+      const demoTasks = await insertDemoTasks(module_id)
+      return createResponse({
+        success: true,
+        count: demoTasks.length,
+        tasks: demoTasks,
+        source: "demo_fallback",
+        message: `Using demo tasks. AI Error: ${error.message || "Unknown error"}`,
+      })
+    } catch (fallbackError: any) {
+      console.error("❌ Fallback to demo tasks also failed:", fallbackError)
+      return createResponse(
+        {
+          success: false,
+          error: `Task generation failed and fallback also failed. Original error: ${error.message}`,
+        },
+        500,
+      )
+    }
   }
 }
