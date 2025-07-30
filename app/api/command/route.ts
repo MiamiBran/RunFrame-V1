@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
+import OpenAI from "openai"
 
 // Validate API key format
-function isValidOpenAIKey(key: string | undefined): key is string {
-  return !!(key && typeof key === "string" && key.trim().length > 0 && key.startsWith("sk-") && key.length > 20)
+function isValidOpenAIKey(key: any): key is string {
+  return !!(key && typeof key === "string" && key.trim().startsWith("sk-") && key.trim().length > 20)
 }
 
 export async function POST(req: Request) {
@@ -14,28 +15,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No prompt provided" }, { status: 400 })
     }
 
-    // Validate API key before proceeding
     const apiKey = process.env.OPENAI_API_KEY
     if (!isValidOpenAIKey(apiKey)) {
-      console.log("📦 No valid OpenAI key for command processing, using demo mode")
+      console.log("📦 No valid OpenAI key for command processing, using demo mode.")
       return NextResponse.json({
-        summary: "Demo mode: Command received and processed locally",
+        summary: "Demo mode: Command received. AI functions disabled.",
         action: "demo",
       })
     }
 
-    // Only import OpenAI if we have a valid key
-    let OpenAI
-    try {
-      const openaiModule = await import("openai")
-      OpenAI = openaiModule.default
-    } catch (importError) {
-      console.error("❌ Failed to import OpenAI:", importError)
-      return NextResponse.json({
-        summary: "Command processing failed due to OpenAI import error",
-        error: importError instanceof Error ? importError.message : "Unknown error",
-      })
-    }
+    // --- Valid API Key Path ---
+    const openai = new OpenAI({ apiKey })
 
     const tools = [
       {
@@ -85,36 +75,11 @@ export async function POST(req: Request) {
       },
     ]
 
-    // Initialize OpenAI with proper validation
-    let openai
-    try {
-      openai = new OpenAI({
-        apiKey: apiKey.trim(), // Ensure no whitespace
-        dangerouslyAllowBrowser: true, // Safe in server-side API routes
-      })
-    } catch (initError) {
-      console.error("❌ Failed to initialize OpenAI client for command:", initError)
-      return NextResponse.json(
-        {
-          summary: "Command processing failed due to OpenAI initialization error",
-          error: initError instanceof Error ? initError.message : "Unknown error",
-        },
-        { status: 500 },
-      )
-    }
-
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        {
-          role: "system",
-          content:
-            "You are an AI assistant for RunFrame, a project execution system. Help users manage modules, sprints, and tasks. Be concise and helpful.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
+        { role: "system", content: "You are an AI assistant for RunFrame. Be concise." },
+        { role: "user", content: prompt },
       ],
       tools,
       tool_choice: "auto",
@@ -126,6 +91,9 @@ export async function POST(req: Request) {
     if (toolCall && supabase) {
       const { name, arguments: args } = toolCall.function
       const parsedArgs = JSON.parse(args)
+
+      // Handle tool calls...
+      console.log(`Executing tool: ${name}`, parsedArgs)
 
       try {
         if (name === "start_sprint") {
@@ -223,12 +191,12 @@ export async function POST(req: Request) {
       summary: message.content || "Command processed successfully",
       tool_used: toolCall?.function.name || null,
     })
-  } catch (error) {
-    console.error("API Error:", error)
+  } catch (error: any) {
+    console.error("❌ Command API Error:", error)
     return NextResponse.json(
       {
         error: "Failed to process command",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error.message || "Unknown error",
       },
       { status: 500 },
     )
