@@ -831,7 +831,13 @@ export const useRunframeStore = create<RunframeStore>((set, get) => ({
     const habit = get().habits.find((h) => h.id === id)
     if (!habit) return
 
-    const wasCompletedToday = habit.today || (habit.last_check && isSameDay(new Date(habit.last_check), new Date()))
+    let wasCompletedToday = false
+    if (habit.today) {
+      wasCompletedToday = true
+    } else if (habit.last_check) {
+      wasCompletedToday = isSameDay(new Date(habit.last_check), new Date())
+    }
+
     const newStreak = wasCompletedToday ? Math.max(0, habit.streak - 1) : habit.streak + 1
     const newToday = !wasCompletedToday
 

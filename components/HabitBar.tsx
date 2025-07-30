@@ -21,7 +21,15 @@ export default function HabitBar() {
 
   const renderChip = (item: any) => {
     const isHabit = mode === "habit"
-    const done = isHabit ? item.today || (item.last_check && isSameDay(new Date(item.last_check), new Date())) : false
+
+    let done = false
+    if (isHabit) {
+      if (item.today) {
+        done = true
+      } else if (item.last_check) {
+        done = isSameDay(new Date(item.last_check), new Date())
+      }
+    }
 
     const handleClick = () => {
       if (isHabit) {
