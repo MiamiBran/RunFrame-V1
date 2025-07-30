@@ -15,7 +15,7 @@ import LandingScene from "@/components/LandingScene"
 import { ChevronDown, ChevronRight } from "lucide-react"
 
 export default function Home() {
-  const { modules, activeLayer, fetchInitial, realtime } = useRunframeStore()
+  const { modules, activeLayer, fetchInitial, realtime, isLoading } = useRunframeStore()
   const { isAnyDrawerOpen } = useDrawerState()
   const [isMobile, setIsMobile] = useState(false)
   const [coreCollapsed, setCoreCollapsed] = useState(false)
@@ -53,6 +53,17 @@ export default function Home() {
   }, [])
 
   const renderTile = (module: any) => <ModuleTile key={module.id} module={module} />
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen bg-bg items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-signal border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-400 font-display">Initializing RunFrame Core...</p>
+        </div>
+      </div>
+    )
+  }
 
   const content = (
     <>

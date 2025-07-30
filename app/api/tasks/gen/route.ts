@@ -1,9 +1,21 @@
+Finally, I
+'ll rewrite the task generation API route to be more robust and provide clearer errors.
+
+```typescript
 export const runtime = "nodejs" // Force Node.js runtime, disable edge
 
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
+import { z } from "zod"
+
+// Zod schemas for validation
+const TaskSchema = z.object({
+  label: z.string().min(1, "Task label cannot be empty."),
+  priority: z.number().int().optional(),
+})
+const TasksArraySchema = z.array(TaskSchema)
 
 // Helper function to create consistent JSON response
 function createResponse(data: any, status = 200) {
@@ -91,17 +103,23 @@ export async function POST(req: Request) {
   try {
     console.log("🤖 Valid API key found. Using Vercel AI SDK...")
 
-    let moduleContext = `Module ID: ${module_id}`
-    if (supabase) {
-      const { data: moduleData } = await supabase
-        .from("modules")
-        .select("name, deliverable")
-        .eq("id", module_id)
-        .single()
-      if (moduleData) {
-        moduleContext = `Module: ${moduleData.name}\nDeliverable: ${moduleData.deliverable}`
-      }
+    if (!supabase) {
+      throw new Error("Supabase client is not available.")
     }
+
+    // 1. Verify module exists before proceeding
+    const { data: moduleData, error: moduleError } = await supabase
+      .from("modules")
+      .select("name, deliverable")
+      .eq("id", module_id)
+      .single()
+
+    if (moduleError || !moduleData) {
+      console.error(`❌ Module with ID ${module_id} not found.`, moduleError)
+      throw new Error(`Module with ID ${module_id} not found. Cannot generate tasks.`)
+    }
+
+    const moduleContext = `Module: ${moduleData.name}\nDeliverable: ${moduleData.deliverable}`
 
     const { text } = await generateText({
       model: openai("gpt-4o-mini"),
@@ -115,32 +133,40 @@ export async function POST(req: Request) {
       throw new Error("Empty response from AI")
     }
 
-    const generatedTasks = JSON.parse(text)
-    if (!Array.isArray(generatedTasks) || generatedTasks.length === 0) {
-      throw new Error("AI did not return a valid task array")
+    // 2. Validate AI response format
+    let generatedTasks
+    try {
+      const parsed = JSON.parse(text)
+      const validationResult = TasksArraySchema.safeParse(parsed)
+      if (!validationResult.success) {
+        console.error("AI response validation failed:", validationResult.error)
+        throw new Error("AI returned data in an invalid format.")
+      }
+      generatedTasks = validationResult.data
+    } catch (parseOrValidationError) {
+      console.error("Failed to parse or validate AI response:", parseOrValidationError)
+      throw new Error("AI returned malformed JSON.")
     }
 
-    if (supabase) {
-      // Delete old tasks
-      const { error: deleteError } = await supabase.from("tasks").delete().eq("module_id", module_id)
-      if (deleteError) {
-        console.error("DB delete error:", deleteError)
-        throw new Error("Failed to clear existing tasks.")
-      }
+    // Delete old tasks
+    const { error: deleteError } = await supabase.from("tasks").delete().eq("module_id", module_id)
+    if (deleteError) {
+      console.error("DB delete error:", deleteError)
+      throw new Error("Failed to clear existing tasks.")
+    }
 
-      // Insert new tasks
-      const tasksToInsert = generatedTasks.map((task: any, index: number) => ({
-        module_id,
-        label: task.label,
-        priority: typeof task.priority === "number" ? task.priority : index + 1,
-        state: "todo",
-        done: false,
-      }))
-      const { error: insertError } = await supabase.from("tasks").insert(tasksToInsert)
-      if (insertError) {
-        console.error("DB insert error:", insertError)
-        throw new Error("Failed to save new tasks.")
-      }
+    // Insert new tasks
+    const tasksToInsert = generatedTasks.map((task, index) => ({
+      module_id,
+      label: task.label,
+      priority: typeof task.priority === "number" ? task.priority : index + 1,
+      state: "todo",
+      done: false,
+    }))
+    const { error: insertError } = await supabase.from("tasks").insert(tasksToInsert)
+    if (insertError) {
+      console.error("DB insert error:", insertError)
+      throw new Error("Failed to save new tasks.")
     }
 
     return createResponse({
