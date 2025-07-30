@@ -2,7 +2,8 @@ export const runtime = "nodejs" // Force Node.js runtime, disable edge
 
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
-import OpenAI from "openai"
+import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
 
 // Helper function to create consistent JSON response
 function createResponse(data: any, status = 200) {
@@ -84,8 +85,7 @@ export async function POST(req: Request) {
 
   // --- Valid API Key Path ---
   try {
-    console.log("🤖 Valid API key found. Initializing OpenAI client...")
-    const openai = new OpenAI({ apiKey }) // Updated line
+    console.log("🤖 Valid API key found. Using Vercel AI SDK...")
 
     let moduleContext = `Module ID: ${module_id}`
     if (supabase) {
@@ -99,26 +99,19 @@ export async function POST(req: Request) {
       }
     }
 
-    console.log("🤖 Attempting OpenAI generation...")
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `You are a task generator. Return ONLY a JSON array of tasks. No other text. Format: [{"label":"task description","priority":1}]. Return 5-7 tasks.`,
-        },
-        { role: "user", content: `Generate tasks for: ${moduleContext}` },
-      ],
+    const { text } = await generateText({
+      model: openai("gpt-4o-mini"),
+      system: `You are a task generator. Return ONLY a JSON array of tasks. No other text. Format: [{"label":"task description","priority":1}]. Return 5-7 tasks.`,
+      prompt: `Generate tasks for: ${moduleContext}`,
       temperature: 0.1,
-      max_tokens: 500,
+      maxTokens: 500,
     })
 
-    const content = completion.choices[0]?.message?.content
-    if (!content) {
-      throw new Error("Empty response from OpenAI")
+    if (!text) {
+      throw new Error("Empty response from AI")
     }
 
-    const generatedTasks = JSON.parse(content)
+    const generatedTasks = JSON.parse(text)
     if (!Array.isArray(generatedTasks) || generatedTasks.length === 0) {
       throw new Error("AI did not return a valid task array")
     }

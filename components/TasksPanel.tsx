@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Plus, Sparkles, RefreshCw, Key } from "lucide-react"
+import { Plus, Sparkles, RefreshCw } from "lucide-react"
 import { useRunframeStore } from "@/store/useRunframeStore"
 import toast from "react-hot-toast"
 import KanbanBoard from "./KanbanBoard"
@@ -190,9 +190,6 @@ export default function TasksPanel({ moduleId }: TasksPanelProps) {
     return "text-red-400"
   }
 
-  // Check if OpenAI API key is available
-  const hasOpenAIKey = typeof window !== "undefined" && process.env.NEXT_PUBLIC_HAS_OPENAI_KEY === "true"
-
   return (
     <div className="space-y-4">
       {/* View Toggle Header */}
@@ -238,20 +235,6 @@ export default function TasksPanel({ moduleId }: TasksPanelProps) {
         </button>
       </form>
 
-      {/* API Key Status Warning */}
-      {!hasOpenAIKey && (
-        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 flex items-start gap-2">
-          <Key className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
-          <div className="text-sm">
-            <div className="text-yellow-400 font-medium">No OpenAI API Key</div>
-            <div className="text-gray-300 text-xs mt-1">
-              Task generation will use demo tasks. Add OPENAI_API_KEY to your environment variables for AI-generated
-              tasks.
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Generate Tasks Button */}
       <button
         onClick={handleGenerateTasks}
@@ -266,7 +249,7 @@ export default function TasksPanel({ moduleId }: TasksPanelProps) {
         ) : (
           <>
             <Sparkles className="w-4 h-4" />
-            {hasOpenAIKey ? "Generate AI Tasks" : "Generate Demo Tasks"}
+            Generate AI Tasks
           </>
         )}
       </button>

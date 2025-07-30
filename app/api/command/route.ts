@@ -2,7 +2,9 @@ export const runtime = "nodejs" // Force Node.js runtime, disable edge
 
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
-import OpenAI from "openai"
+import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { z } from "zod"
 
 // Validate API key format
 function isValidOpenAIKey(key: any): key is string {
@@ -27,171 +29,79 @@ export async function POST(req: Request) {
     }
 
     // --- Valid API Key Path ---
-    const openai = new OpenAI({ apiKey })
-
-    const tools = [
-      {
-        type: "function" as const,
-        function: {
-          name: "start_sprint",
+    const { text, toolCalls, finishReason } = await generateText({
+      model: openai("gpt-4o-mini"),
+      system: "You are an AI assistant for RunFrame. Be concise.",
+      prompt,
+      tools: {
+        start_sprint: {
           description: "Start a sprint for a module",
-          parameters: {
-            type: "object",
-            properties: {
-              module_id: { type: "string", description: "The ID of the module" },
-              deliverable: { type: "string", description: "The deliverable for the sprint" },
-              length_days: { type: "integer", description: "Length of sprint in days" },
-            },
-            required: ["module_id", "deliverable", "length_days"],
-          },
+          parameters: z.object({
+            module_id: z.string().describe("The ID of the module"),
+            deliverable: z.string().describe("The deliverable for the sprint"),
+            length_days: z.number().int().describe("Length of sprint in days"),
+          }),
         },
-      },
-      {
-        type: "function" as const,
-        function: {
-          name: "log_progress",
+        log_progress: {
           description: "Log progress for a module",
-          parameters: {
-            type: "object",
-            properties: {
-              module_id: { type: "string", description: "The ID of the module" },
-              note: { type: "string", description: "Progress note" },
-            },
-            required: ["module_id", "note"],
-          },
+          parameters: z.object({
+            module_id: z.string().describe("The ID of the module"),
+            note: z.string().describe("Progress note"),
+          }),
         },
-      },
-      {
-        type: "function" as const,
-        function: {
-          name: "recalibrate",
+        recalibrate: {
           description: "Recalibrate a module",
-          parameters: {
-            type: "object",
-            properties: {
-              module_id: { type: "string", description: "The ID of the module" },
-            },
-            required: ["module_id"],
-          },
+          parameters: z.object({
+            module_id: z.string().describe("The ID of the module"),
+          }),
         },
       },
-    ]
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "You are an AI assistant for RunFrame. Be concise." },
-        { role: "user", content: prompt },
-      ],
-      tools,
-      tool_choice: "auto",
     })
 
-    const message = completion.choices[0].message
-    const toolCall = message.tool_calls?.[0]
+    if (finishReason === "tool-calls" && toolCalls && supabase) {
+      for (const toolCall of toolCalls) {
+        const { toolName, args } = toolCall
+        console.log(`Executing tool: ${toolName}`, args)
 
-    if (toolCall && supabase) {
-      const { name, arguments: args } = toolCall.function
-      const parsedArgs = JSON.parse(args)
-
-      // Handle tool calls...
-      console.log(`Executing tool: ${name}`, parsedArgs)
-
-      try {
-        if (name === "start_sprint") {
-          // Update module
-          await supabase
-            .from("modules")
-            .update({
-              state: "sprint",
-              sprint_day: 1,
-              deliverable: parsedArgs.deliverable,
-              length_days: parsedArgs.length_days,
-            })
-            .eq("id", parsedArgs.module_id)
-
-          // Create sprint record
-          const { data: sprintData, error: sprintError } = await supabase
-            .from("sprints")
-            .insert({
-              module_id: parsedArgs.module_id,
-              start_date: new Date().toISOString(),
-            })
-            .select()
-            .single()
-
-          if (!sprintError && sprintData) {
-            // Generate sprint template
-            const sprintTemplate = `# Sprint Plan - ${new Date().toLocaleDateString()}
-
-## Sprint Overview
-- **Module**: ${parsedArgs.module_id}
-- **Deliverable**: ${parsedArgs.deliverable}
-- **Duration**: ${parsedArgs.length_days} days
-- **Start Date**: ${new Date().toLocaleDateString()}
-
-## Sprint Goals
-- [ ] Complete core deliverable: ${parsedArgs.deliverable}
-- [ ] Maintain code quality standards
-- [ ] Update documentation
-- [ ] Conduct testing and review
-
-## Daily Progress
-
-### Day 1 - ${new Date().toLocaleDateString()}
-- Sprint initiated
-- Initial planning completed
-
-## Notes
-- Track daily progress in this document
-- Update task status regularly
-- Note any blockers or challenges
-
----
-*Generated by RunFrame AI Assistant*`
-
-            // Upload template to storage
-            try {
-              const { error: uploadError } = await supabase.storage
-                .from("docs")
-                .upload(`sprints/${sprintData.id}.md`, new Blob([sprintTemplate], { type: "text/markdown" }), {
-                  contentType: "text/markdown",
-                })
-
-              if (uploadError) {
-                console.error("Failed to upload sprint template:", uploadError)
-              }
-            } catch (uploadError) {
-              console.error("Storage upload failed:", uploadError)
-            }
+        try {
+          if (toolName === "start_sprint") {
+            await supabase
+              .from("modules")
+              .update({
+                state: "sprint",
+                sprint_day: 1,
+                deliverable: args.deliverable,
+                length_days: args.length_days,
+              })
+              .eq("id", args.module_id)
           }
-        }
 
-        if (name === "log_progress") {
-          await supabase.from("activity").insert({
-            module_id: parsedArgs.module_id,
-            content: parsedArgs.note,
-            created_at: new Date().toISOString(),
-          })
-        }
-
-        if (name === "recalibrate") {
-          await supabase
-            .from("modules")
-            .update({
-              state: "idle",
-              sprint_day: 0,
+          if (toolName === "log_progress") {
+            await supabase.from("activity").insert({
+              module_id: args.module_id,
+              content: args.note,
+              created_at: new Date().toISOString(),
             })
-            .eq("id", parsedArgs.module_id)
+          }
+
+          if (toolName === "recalibrate") {
+            await supabase
+              .from("modules")
+              .update({
+                state: "idle",
+                sprint_day: 0,
+              })
+              .eq("id", args.module_id)
+          }
+        } catch (dbError) {
+          console.error("Database operation failed:", dbError)
         }
-      } catch (dbError) {
-        console.error("Database operation failed:", dbError)
       }
     }
 
     return NextResponse.json({
-      summary: message.content || "Command processed successfully",
-      tool_used: toolCall?.function.name || null,
+      summary: text || "Command processed successfully",
+      tool_used: toolCalls?.[0]?.toolName || null,
     })
   } catch (error: any) {
     console.error("❌ Command API Error:", error)
