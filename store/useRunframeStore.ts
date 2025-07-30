@@ -1,8 +1,6 @@
 import { create } from "zustand"
 import { supabase } from "@/lib/supabaseClient"
-import * as dayjs from "dayjs"
-import isSame from "dayjs/plugin/isSame"
-dayjs.extend(isSame)
+import { format, subDays, isSameDay } from "date-fns"
 
 export type Module = {
   id: string
@@ -500,7 +498,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 7,
     quota: 1,
     today: true,
-    last_check: dayjs.default().format("YYYY-MM-DD"),
+    last_check: format(new Date(), "yyyy-MM-dd"),
     module_id: "00000000-0000-4000-a000-000000000002",
   },
   {
@@ -510,7 +508,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 3,
     quota: 1,
     today: false,
-    last_check: dayjs.default().subtract(1, "day").format("YYYY-MM-DD"),
+    last_check: format(subDays(new Date(), 1), "yyyy-MM-dd"),
     module_id: "00000000-0000-4000-a000-000000000007",
   },
   {
@@ -520,7 +518,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 12,
     quota: 1,
     today: true,
-    last_check: dayjs.default().format("YYYY-MM-DD"),
+    last_check: format(new Date(), "yyyy-MM-dd"),
     module_id: "00000000-0000-4000-c000-000000000011",
   },
   {
@@ -530,7 +528,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 5,
     quota: 1,
     today: false,
-    last_check: dayjs.default().subtract(2, "day").format("YYYY-MM-DD"),
+    last_check: format(subDays(new Date(), 2), "yyyy-MM-dd"),
     module_id: "00000000-0000-4000-c000-000000000013",
   },
   {
@@ -540,7 +538,7 @@ const DEMO_HABITS: Habit[] = [
     streak: 2,
     quota: 1,
     today: true,
-    last_check: dayjs.default().format("YYYY-MM-DD"),
+    last_check: format(new Date(), "yyyy-MM-dd"),
     module_id: "00000000-0000-4000-b000-000000000013",
   },
 ]
@@ -829,11 +827,11 @@ export const useRunframeStore = create<RunframeStore>((set, get) => ({
       navigator.vibrate(30)
     }
 
-    const today = dayjs.default().format("YYYY-MM-DD")
+    const today = format(new Date(), "yyyy-MM-dd")
     const habit = get().habits.find((h) => h.id === id)
     if (!habit) return
 
-    const wasCompletedToday = habit.today || dayjs.default(habit.last_check).isSame(dayjs.default(), "day")
+    const wasCompletedToday = habit.today || (habit.last_check && isSameDay(new Date(habit.last_check), new Date()))
     const newStreak = wasCompletedToday ? Math.max(0, habit.streak - 1) : habit.streak + 1
     const newToday = !wasCompletedToday
 

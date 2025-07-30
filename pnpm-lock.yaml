@@ -62,9 +62,6 @@ importers:
       date-fns:
         specifier: latest
         version: 4.1.0
-      dayjs:
-        specifier: latest
-        version: 1.11.13
       eslint:
         specifier: ^8
         version: 8.0.0

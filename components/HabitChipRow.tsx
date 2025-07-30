@@ -1,8 +1,6 @@
 "use client"
 
-import * as dayjs from "dayjs"
-import isSame from "dayjs/plugin/isSame"
-dayjs.extend(isSame)
+import { isSameDay } from "date-fns"
 import { useRunframeStore } from "@/store/useRunframeStore"
 
 export default function HabitChipRow() {
@@ -13,7 +11,7 @@ export default function HabitChipRow() {
   return (
     <div className="flex gap-3 overflow-x-auto px-4 py-3 bg-[#080808] border-b border-white/5 scrollbar-hide">
       {habits.map((h) => {
-        const met = h.today || dayjs.default(h.last_check).isSame(dayjs.default(), "day")
+        const met = h.today || (h.last_check && isSameDay(new Date(h.last_check), new Date()))
         return (
           <button
             key={h.id}

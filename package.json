@@ -29,7 +29,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "latest",
-    "dayjs": "latest",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "framer-motion": "latest",
