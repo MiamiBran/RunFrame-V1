@@ -1,7 +1,7 @@
 "use client"
 import { useRunframeStore } from "@/store/useRunframeStore"
 import { useLongPress } from "@/lib/useLongPress"
-import dayjs from "dayjs"
+import * as dayjs from "dayjs"
 import isSame from "dayjs/plugin/isSame"
 dayjs.extend(isSame)
 import { useState } from "react"
@@ -23,7 +23,7 @@ export default function HabitBar() {
 
   const renderChip = (item: any) => {
     const isHabit = mode === "habit"
-    const done = isHabit ? item.today || dayjs(item.last_check).isSame(dayjs(), "day") : false
+    const done = isHabit ? item.today || dayjs.default(item.last_check).isSame(dayjs.default(), "day") : false
 
     const handleClick = () => {
       if (isHabit) {

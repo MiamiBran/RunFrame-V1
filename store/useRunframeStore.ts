@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { supabase } from "@/lib/supabaseClient"
-import dayjs from "dayjs"
+import * as dayjs from "dayjs"
 import isSame from "dayjs/plugin/isSame"
 dayjs.extend(isSame)
 
