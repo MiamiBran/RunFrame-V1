@@ -1,6 +1,8 @@
 "use client"
 
 import dayjs from "dayjs"
+import isSame from "dayjs/plugin/isSame"
+dayjs.extend(isSame)
 import { useRunframeStore } from "@/store/useRunframeStore"
 
 export default function HabitChipRow() {

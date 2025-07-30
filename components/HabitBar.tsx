@@ -2,6 +2,8 @@
 import { useRunframeStore } from "@/store/useRunframeStore"
 import { useLongPress } from "@/lib/useLongPress"
 import dayjs from "dayjs"
+import isSame from "dayjs/plugin/isSame"
+dayjs.extend(isSame)
 import { useState } from "react"
 
 export default function HabitBar() {

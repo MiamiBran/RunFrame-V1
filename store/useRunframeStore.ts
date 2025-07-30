@@ -1,8 +1,10 @@
 import { create } from "zustand"
 import { supabase } from "@/lib/supabaseClient"
 import dayjs from "dayjs"
+import isSame from "dayjs/plugin/isSame"
+dayjs.extend(isSame)
 
-type Module = {
+export type Module = {
   id: string
   name: string
   state: string
@@ -13,7 +15,7 @@ type Module = {
   length_days?: number
 }
 
-type Task = {
+export type Task = {
   id: string
   module_id: string
   label: string
@@ -22,7 +24,7 @@ type Task = {
   state: "todo" | "doing" | "done"
 }
 
-type Habit = {
+export type Habit = {
   id: string
   name: string
   cadence: string
@@ -33,7 +35,7 @@ type Habit = {
   module_id: string
 }
 
-type Routine = {
+export type Routine = {
   id: string
   name: string
   cadence: string
@@ -940,5 +942,3 @@ export const useRunframeStore = create<RunframeStore>((set, get) => ({
     }))
   },
 }))
-
-export type { Module, Task, Habit, Routine }
