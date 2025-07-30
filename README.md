@@ -45,6 +45,8 @@ pnpm seed
   supabaseClient.ts        # Database client
 /scripts
   seedModules.ts           # Database seeding script
+  01-create-tables.sql    # SQL script to create tables
+  02-enable-realtime.sql  # SQL script to enable Realtime
 /app/api/command/route.ts  # OpenAI tools endpoint
 \`\`\`
 
@@ -81,51 +83,9 @@ OPENAI_API_KEY=your_openai_api_key
 
 ## 📊 Database Schema
 
-Run this SQL in your Supabase SQL editor:
+Run the SQL scripts in the `/scripts` folder in your Supabase SQL editor to set up the required tables. Start with `01-create-tables.sql`.
 
-\`\`\`sql
--- Create modules table
-CREATE TABLE modules (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  state TEXT CHECK (state IN ('idle', 'sprint', 'drifted', 'locked', 'wip', 'built', 'partial', 'stub', 'spare')) DEFAULT 'idle',
-  sprint_day INTEGER DEFAULT 0,
-  deliverable TEXT NOT NULL,
-  layer TEXT CHECK (layer IN ('z', 'x', 'y')) NOT NULL,
-  code INTEGER NOT NULL,
-  length_days INTEGER,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(layer, code)
-);
-
--- Create tasks table
-CREATE TABLE tasks (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  module_id UUID REFERENCES modules(id) ON DELETE CASCADE,
-  label TEXT NOT NULL,
-  done BOOLEAN DEFAULT FALSE,
-  priority INTEGER DEFAULT 1,
-  state TEXT CHECK (state IN ('todo', 'doing', 'done')) DEFAULT 'todo',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Create habits table
-CREATE TABLE habits (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  cadence TEXT DEFAULT 'daily',
-  streak INTEGER DEFAULT 0,
-  last_check DATE,
-  module_id UUID REFERENCES modules(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Enable Realtime
-ALTER PUBLICATION supabase_realtime ADD TABLE modules;
-ALTER PUBLICATION supabase_realtime ADD TABLE tasks;
-ALTER PUBLICATION supabase_realtime ADD TABLE habits;
-\`\`\`
+This will create the `modules`, `tasks`, `habits`, and `routines` tables and enable Realtime for them.
 
 ## 🌱 Database Seeding
 
@@ -201,6 +161,3 @@ Deploy to Vercel with one click:
 ---
 
 Built with ❤️ using Next.js 15, Tailwind CSS, and Framer Motion.
-\`\`\`
-
-Finally, let's add the seed script to package.json:
