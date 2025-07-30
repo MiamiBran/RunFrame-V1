@@ -101,7 +101,6 @@ export default function DebugPanel() {
           <div className="mt-3 pt-2 border-t border-white/10">
             <div className="text-gray-400 text-xs">Environment: {debugData.nodeEnv}</div>
             <div className="text-gray-400 text-xs">Total Env Vars: {debugData.totalEnvVars}</div>
-            <div className="text-gray-400 text-xs">Public Flag: {debugData.publicKeyValue}</div>
           </div>
 
           <button

@@ -24,10 +24,6 @@ export async function GET() {
     // Environment variables count
     totalEnvVars: Object.keys(process.env).length,
 
-    // Other OpenAI related vars
-    hasPublicKey: !!process.env.NEXT_PUBLIC_HAS_OPENAI_KEY,
-    publicKeyValue: process.env.NEXT_PUBLIC_HAS_OPENAI_KEY,
-
     timestamp: new Date().toISOString(),
   })
 }
