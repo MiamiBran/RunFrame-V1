@@ -1,7 +1,3 @@
-Finally, I
-'ll rewrite the task generation API route to be more robust and provide clearer errors.
-
-```typescript
 export const runtime = "nodejs" // Force Node.js runtime, disable edge
 
 import { NextResponse } from "next/server"
