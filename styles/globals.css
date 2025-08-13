@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fontsource/poppins/300.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+
+@layer base {
+  body {
+    perspective: 1000px;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .drag-handle::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 48px;
+    height: 4px;
+    border-radius: 9999px;
+    background: #444;
+    transform: translateX(-50%);
+  }
+
+  /* Custom slider styles */
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #7000ff;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(112, 0, 255, 0.5);
+  }
+
+  .slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #7000ff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px rgba(112, 0, 255, 0.5);
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-800/20;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-signal/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-signal;
+}
+
+/* React Big Calendar Dark Theme */
+.rbc-calendar {
+  background: transparent !important;
+  color: #fff !important;
+}
+
+.rbc-header {
+  background: rgba(26, 26, 26, 0.6) !important;
+  color: #fff !important;
+  border-bottom: 1px solid rgba(112, 0, 255, 0.2) !important;
+  padding: 8px !important;
+}
+
+.rbc-month-view,
+.rbc-time-view {
+  background: transparent !important;
+  border: 1px solid rgba(112, 0, 255, 0.2) !important;
+}
+
+.rbc-day-bg {
+  background: rgba(26, 26, 26, 0.3) !important;
+  border: 1px solid rgba(112, 0, 255, 0.1) !important;
+}
+
+.rbc-day-bg:hover {
+  background: rgba(112, 0, 255, 0.1) !important;
+}
+
+.rbc-today {
+  background: rgba(112, 0, 255, 0.2) !important;
+}
+
+.rbc-off-range-bg {
+  background: rgba(26, 26, 26, 0.1) !important;
+}
+
+.rbc-toolbar {
+  color: #fff !important;
+  margin-bottom: 16px !important;
+}
+
+.rbc-toolbar button {
+  background: rgba(26, 26, 26, 0.6) !important;
+  border: 1px solid rgba(112, 0, 255, 0.2) !important;
+  color: #fff !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  margin: 0 4px !important;
+}
+
+.rbc-toolbar button:hover {
+  background: rgba(112, 0, 255, 0.3) !important;
+  border-color: #7000ff !important;
+}
+
+.rbc-toolbar button.rbc-active {
+  background: #7000ff !important;
+  border-color: #7000ff !important;
+}
+
+.rbc-time-slot {
+  border-top: 1px solid rgba(112, 0, 255, 0.1) !important;
+  color: #888 !important;
+}
+
+.rbc-time-gutter .rbc-time-slot {
+  color: #888 !important;
+}
+
+.rbc-current-time-indicator {
+  background: #7000ff !important;
+}
