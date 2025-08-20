@@ -124,6 +124,10 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-bg">
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
+
       <div className="flex-1 p-8">
         <div className="max-w-full mx-auto">
           {/* Mobile top padding */}
@@ -135,8 +139,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      <Sidebar />
 
       {/* Drawer Backdrop - Mobile Only */}
       <DrawerBackdrop />
